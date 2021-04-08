@@ -41,7 +41,7 @@ func main() {
 	}
 	// Ask if server idx is alive
 	// Return idx value to the client
-	fmt.Printf("\033[31mKey %v is stored in Node: %v\033[0m", key, idx)
+	fmt.Printf("\033[31mKey %v is stored in Node: %v\033[0m\n", key, idx)
 
 
 	// create the router

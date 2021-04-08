@@ -43,7 +43,9 @@ func ChangeNodeStatus() gin.HandlerFunc {
 
 		NodesStatus[nodeStatusStruct.Name] = nodeStatusStruct.Status
 
+		fmt.Printf("\033[31m")
 		fmt.Println(NodesStatus)
+		fmt.Println("\033[0m")
 
 		context.JSON(200, gin.H{
 			"success": true,
