@@ -3,13 +3,12 @@ package nodeStatus
 import (
 	"encoding/json"
 	"fmt"
-	"go-consistent-hashing/controllers"
 	"io/ioutil"
 	"log"
 	"net/http"
 )
 
-func GetOneNodeStatus(nodeName string, port string) controllers.NodeStatusStruct {
+func GetOneNodeStatus(nodeName string, port string) NodeStatusStruct {
 	resp, err := http.Get("http://" + nodeName + ":" + port + "/node-health")
 	if err != nil {
 		log.Fatal(err)
@@ -23,19 +22,19 @@ func GetOneNodeStatus(nodeName string, port string) controllers.NodeStatusStruct
 		log.Fatal(err)
 	}
 
-	data := controllers.NodeStatusStruct{}
+	data := NodeStatusStruct{}
 	json.Unmarshal([]byte(string(body)), &data)
 	return data
 }
 
 func UpdateNodesStatusMap() {
-	theMap := controllers.NodesStatus
+	theMap := NodesStatus
 
 	for _, val := range theMap {
 		// TODO if no response for timeout set the status as TERMINATED
 		data := GetOneNodeStatus(val.NodeName, val.Port)
 		// map is updated here
-		controllers.NodesStatus[data.Name] = data
+		NodesStatus[data.Name] = data
 	}
 	fmt.Println(theMap)
 }

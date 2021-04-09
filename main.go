@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"go-consistent-hashing/controllers"
 	"go-consistent-hashing/nodeStatus"
 	"go-consistent-hashing/routers"
 	"go-consistent-hashing/utils"
@@ -17,15 +16,20 @@ func main() {
 	go func() {
 		for {
 			nodeStatus.UpdateNodesStatusMap()
-			// fmt.Println(time.Now().UTC())
 			// sleep for one second
 			time.Sleep(time.Second * 1)
 		}
 	}()
-	
+
 	// TODO Listen at some port
-	// TODO mapping for node name with index in the node_value_mapping
-	number_of_nodes := len(controllers.NodesStatus)
+	number_of_nodes := nodeStatus.GetNumberOfAliveNodes()
+	var nodeIdxNameMap = make(map[int]string)
+	idx := 0
+	for _, val := range nodeStatus.NodesStatus {
+		nodeIdxNameMap[idx] = val.NodeName
+		idx++
+	}
+	fmt.Println(nodeIdxNameMap)
 	fmt.Println(utils.GetNodeLocation(number_of_nodes, "qwertyuio"))
 
 	// create the router

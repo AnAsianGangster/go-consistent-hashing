@@ -8,14 +8,14 @@ import (
 	"net/http"
 )
 
-func ChangeNodeStatus(port string) {
+func ChangeNodeStatus(nodeName string, port string) {
 	requestBody, err := json.Marshal(map[string]string{
 		"status": "TERMINATING",
 	})
 	if err != nil {
 		log.Fatal(err)
 	}
-	resp, err := http.Post("http://localhost:"+port+"/node-status", "application/json", bytes.NewBuffer(requestBody))
+	resp, err := http.Post("http://"+nodeName+":"+port+"/node-status", "application/json", bytes.NewBuffer(requestBody))
 	if err != nil {
 		log.Fatal(err)
 	}

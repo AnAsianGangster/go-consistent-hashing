@@ -19,34 +19,24 @@ package controllers
 
 import (
 	"fmt"
+	"go-consistent-hashing/nodeStatus"
 	"log"
 
 	"github.com/gin-gonic/gin"
 )
 
-// TODO change to enums & move to a private folder
-var NodesStatus = make(map[string]NodeStatusStruct)
-
-// TODO I use Content-Type: application/json. Might need to change to postform
-type NodeStatusStruct struct {
-	Name     string `json:"name"`
-	NodeName string `json:"nodeName"`
-	Port     string `json:"port"`
-	Status   string `json:"status"`
-}
-
 func ChangeNodeStatus() gin.HandlerFunc {
 	return func(context *gin.Context) {
-		var NodeStatusStruct NodeStatusStruct
+		var NodeStatusStruct nodeStatus.NodeStatusStruct
 		err := context.BindJSON(&NodeStatusStruct)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		NodesStatus[NodeStatusStruct.Name] = NodeStatusStruct
+		nodeStatus.NodesStatus[NodeStatusStruct.Name] = NodeStatusStruct
 
 		fmt.Printf("\033[31m")
-		fmt.Println(NodesStatus)
+		fmt.Println(nodeStatus.NodesStatus)
 		fmt.Println("\033[0m")
 
 		context.JSON(200, gin.H{
