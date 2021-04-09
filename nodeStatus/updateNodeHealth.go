@@ -1,0 +1,3 @@
+package nodeStatus
+
+func UpdateNodesStatusMap() {}

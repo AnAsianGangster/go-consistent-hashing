@@ -2,18 +2,33 @@ package main
 
 import (
 	"fmt"
+	"go-consistent-hashing/controllers"
+	"go-consistent-hashing/nodeStatus"
 	"go-consistent-hashing/routers"
 	"go-consistent-hashing/utils"
 	"os"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	// TODO listening for ping from nodes
-	/* nodeStatus.GetOneNodeStatus("5000")
-	nodeStatus.ChangeNodeStatus("5000") */
-
+	// ping for nodes
+	go func() {
+		for {
+			theMap := controllers.NodesStatus
+			// for key, val := range theMap {
+			for _, val := range theMap {
+				// fmt.Println("Key:", key, "=>", "val:", val)
+				data := nodeStatus.GetOneNodeStatus(val.NodeName, val.Port)
+				controllers.NodesStatus[data.Name] = data
+			}
+			fmt.Println(theMap)
+			// fmt.Println(time.Now().UTC())
+			// sleep for one second
+			time.Sleep(time.Second * 1)
+		}
+	}()
 
 	// TODO Listen at some port
 	// TODO mapping for node name with index in the node_value_mapping
@@ -42,7 +57,6 @@ func main() {
 	// Ask if server idx is alive
 	// Return idx value to the client
 	fmt.Printf("\033[31mKey %v is stored in Node: %v\033[0m\n", key, idx)
-
 
 	// create the router
 	router := gin.Default()
