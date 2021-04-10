@@ -1,2 +1,2 @@
 ###
-GET http://localhost:6000/key-value-pair?node=server:1&key=email
+GET http://localhost:6000/key-value-pair?key=qwertyuio

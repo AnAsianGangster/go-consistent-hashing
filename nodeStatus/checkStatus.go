@@ -34,7 +34,7 @@ func UpdateNodesStatusMap() {
 		// TODO if no response for timeout set the status as TERMINATED
 		data := GetOneNodeStatus(val.NodeName, val.Port)
 		// map is updated here
-		NodesStatus[data.Name] = data
+		NodesStatus[data.NodeName] = data
 	}
 	fmt.Println(theMap)
 }

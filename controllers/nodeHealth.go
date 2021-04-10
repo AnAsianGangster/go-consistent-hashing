@@ -33,7 +33,7 @@ func ChangeNodeStatus() gin.HandlerFunc {
 			log.Fatal(err)
 		}
 
-		nodeStatus.NodesStatus[NodeStatusStruct.Name] = NodeStatusStruct
+		nodeStatus.NodesStatus[NodeStatusStruct.NodeName] = NodeStatusStruct
 
 		fmt.Printf("\033[31m")
 		fmt.Println(nodeStatus.NodesStatus)
