@@ -43,6 +43,7 @@ func UpdateNodesStatusMap() {
 			NodesStatus[data.NodeName] = data
 		} else {
 			// remove the node from the map
+			// todo hinted handoff
 			delete(theMap, val.NodeName)
 		}
 	}

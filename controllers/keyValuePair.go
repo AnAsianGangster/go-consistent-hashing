@@ -21,6 +21,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"go-consistent-hashing/hintedHandoff"
 	"go-consistent-hashing/nodeStatus"
 	"go-consistent-hashing/utils"
 	"io"
@@ -131,6 +132,16 @@ func CreatOneKeyValuePair() gin.HandlerFunc {
 			"all nodes": fmt.Sprint(storageNodes),
 			"data": fmt.Sprint(responseBodies),
 		})
+
+		// ========== hinted handoff ============
+		if nodeStatus.GetNumberOfAliveNodes() != hintedHandoff.HARDCODED_NUMBER_OF_NODES {
+			var hintedHandoffNodeLocation = utils.GetNodeLocation(hintedHandoff.HARDCODED_NUMBER_OF_NODES, keyValuePair.Key)
+			hintedHandoff.CachedData[hintedHandoffNodeLocation] = append(hintedHandoff.CachedData[hintedHandoffNodeLocation], hintedHandoff.KeyValuePair{
+				Key:   keyValuePair.Key,
+				Value: keyValuePair.Value,
+			})
+			fmt.Println(hintedHandoff.CachedData)
+		}
 	}
 }
 
