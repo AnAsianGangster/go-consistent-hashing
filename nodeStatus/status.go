@@ -2,6 +2,7 @@ package nodeStatus
 
 import (
 	"fmt"
+	"sort"
 )
 
 // TODO change to enums?
@@ -23,9 +24,15 @@ func GetNumberOfAliveNodes() int {
 }
 
 func UpdateNodesStatusMapToArrayMapping() {
+	keys := make([]string, 0)
+	for k, _ := range NodesStatus {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
 	idx := 0
-	for _, val := range NodesStatus {
-		NodeIdxNameMap[idx] = val.NodeName
+	for _, val := range keys {
+		//NodeIdxNameMap[idx] = val.NodeName
+		NodeIdxNameMap[idx] = NodesStatus[val].NodeName
 		idx++
 	}
 	fmt.Println(NodeIdxNameMap)

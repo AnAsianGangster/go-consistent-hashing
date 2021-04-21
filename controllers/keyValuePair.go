@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"go-consistent-hashing/nodeStatus"
 	"go-consistent-hashing/utils"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -48,7 +49,12 @@ func FindOneKeyValuePair() gin.HandlerFunc {
 			log.Fatal(err)
 		}
 
-		defer resp.Body.Close()
+		defer func(Body io.ReadCloser) {
+			err := Body.Close()
+			if err != nil {
+				log.Fatal(err)
+			}
+		}(resp.Body)
 
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
