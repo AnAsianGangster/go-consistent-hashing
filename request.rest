@@ -1,2 +1,48 @@
 ###
-GET http://localhost:6000/key-value-pair?key=qwertyuio
+GET http://localhost:6000/key-value-pair?key=qw
+
+###
+POST http://localhost:6000/key-value-pair
+Content-Type: application/json
+
+{
+    "key": "qw",
+    "value": "The king1"
+}
+
+###
+PUT http://localhost:5000/key-value-pair
+Content-Type: application/json
+
+{
+    "node": "server:1",
+    "key": "aobo",
+    "value": "The queen"
+}
+
+###
+DELETE http://localhost:5000/key-value-pair?node=server:1&key=aobo1
+
+###
+POST http://localhost:5000/node
+Content-Type: application/json
+
+{
+    "node": "server:1",
+    "firstKey": "name",
+    "firstValue": "aobo"
+}
+
+###
+DELETE http://localhost:5000/node?node=server:1
+
+###
+GET http://localhost:5000/node-health
+
+###
+POST http://localhost:5000/node-status
+Content-Type: application/json
+
+{
+    "status": "TERMINATING"
+}
