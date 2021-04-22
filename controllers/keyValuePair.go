@@ -66,11 +66,24 @@ func FindOneKeyValuePair() gin.HandlerFunc {
 
 		log.Println(string(body))
 
+		out, _ := json.Marshal(string(body))
+
 		context.JSON(200, gin.H{
 			"success":  "find one endpoint hit",
 			"location": nodeLocation,
 			"data": string(body),
+			"json": out,
 		})
+
+		// ========== hinted handoff ============
+		if nodeStatus.GetNumberOfAliveNodes() != hintedHandoff.HARDCODED_NUMBER_OF_NODES {
+			var hintedHandoffNodeLocation = utils.GetNodeLocation(hintedHandoff.HARDCODED_NUMBER_OF_NODES, key)
+			hintedHandoff.CachedData[hintedHandoffNodeLocation] = append(hintedHandoff.CachedData[hintedHandoffNodeLocation], hintedHandoff.KeyValuePair{
+				Type: "READ",
+				Key: key,
+			})
+			fmt.Println(hintedHandoff.CachedData)
+		}
 	}
 }
 
@@ -137,6 +150,7 @@ func CreatOneKeyValuePair() gin.HandlerFunc {
 		if nodeStatus.GetNumberOfAliveNodes() != hintedHandoff.HARDCODED_NUMBER_OF_NODES {
 			var hintedHandoffNodeLocation = utils.GetNodeLocation(hintedHandoff.HARDCODED_NUMBER_OF_NODES, keyValuePair.Key)
 			hintedHandoff.CachedData[hintedHandoffNodeLocation] = append(hintedHandoff.CachedData[hintedHandoffNodeLocation], hintedHandoff.KeyValuePair{
+				Type: "WRITE",
 				Key:   keyValuePair.Key,
 				Value: keyValuePair.Value,
 			})

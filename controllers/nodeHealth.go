@@ -63,31 +63,54 @@ func ChangeNodeStatus() gin.HandlerFunc {
 		for _, curCachedData := range hintedHandoff.CachedData[intNodeLocation] {
 			var curNodeName = nodeStatus.NodeIdxNameMap[intNodeLocation]
 			var curPort = nodeStatus.NodesStatus[curNodeName].Port
-			// request body
-			requestBody, err := json.Marshal(map[string]string{
-				"node": curNodeName,
-				"key": curCachedData.Key,
-				"value": curCachedData.Value,
-			})
 
-			resp, err := http.Post("http://"+curNodeName+":"+curPort+"/key-value-pair?", "application/json", bytes.NewBuffer(requestBody))
-			if err != nil {
-				log.Fatal(err)
-			}
+			if curCachedData.Type == "WRITE" {
+				// request body
+				requestBody, err := json.Marshal(map[string]string{
+					"node": curNodeName,
+					"key": curCachedData.Key,
+					"value": curCachedData.Value,
+				})
 
-			defer func(Body io.ReadCloser) {
-				err := Body.Close()
+				resp, err := http.Post("http://"+curNodeName+":"+curPort+"/key-value-pair?", "application/json", bytes.NewBuffer(requestBody))
 				if err != nil {
 					log.Fatal(err)
 				}
-			}(resp.Body)
 
-			body, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-				log.Fatal(err)
+				defer func(Body io.ReadCloser) {
+					err := Body.Close()
+					if err != nil {
+						log.Fatal(err)
+					}
+				}(resp.Body)
+
+				body, err := ioutil.ReadAll(resp.Body)
+				if err != nil {
+					log.Fatal(err)
+				}
+
+				dataHandedOff = append(dataHandedOff, "\u001B[32m\nWRITE\u001B[35m" + string(body))
+			} else {
+				// read operation
+				resp, err := http.Get("http://"+curNodeName+":"+curPort+"/key-value-pair?key="+curCachedData.Key)
+				if err != nil {
+					log.Fatal(err)
+				}
+
+				defer func(Body io.ReadCloser) {
+					err := Body.Close()
+					if err != nil {
+						log.Fatal(err)
+					}
+				}(resp.Body)
+
+				body, err := ioutil.ReadAll(resp.Body)
+				if err != nil {
+					log.Fatal(err)
+				}
+
+				dataHandedOff = append(dataHandedOff, "\u001B[0m\nREAD\u001B[35m"+ string(body))
 			}
-
-			dataHandedOff = append(dataHandedOff, string(body))
 		}
 		// print handed off data in the console
 		fmt.Println(" _     _       _           _    _                     _        __  __")
